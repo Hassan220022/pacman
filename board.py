@@ -8,6 +8,7 @@ from OpenGL import GLUT as glut
 import solid_data as data
 from solid_data import set_color
 
+# Each '1' represents a wall, and '0' indicates a path or empty space
 maze = [ #19x29 maze
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -31,7 +32,7 @@ maze = [ #19x29 maze
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1], 
 ]
 
-
+# Definition of the Coin class which represents coins that can be collected by the player in the game
 class Coin:
     """Class of Coin object."""
 
@@ -43,10 +44,10 @@ class Coin:
         """
         self.pos_x = pos_x
         self.pos_z = pos_z
-        self.radius = 0.1
-        self.coin_color = data.COIN_COLOR  # coin color
-        self.super_coin = False
-
+        self.radius = 0.1                    # Radius of the coin, affects its size when rendered
+        self.coin_color = data.COIN_COLOR    # Color of the coin, defined in 'solid_data.py'
+        self.super_coin = False              # Boolean flag indicating whether it is a super coin
+    # Method to draw the coin in the OpenGL context
     def draw(self):
         """Function draws coin."""
 
@@ -73,7 +74,7 @@ class SuperCoin(Coin):
         self.coin_color = data.SUPER_COIN_COLOR  # super coins color red
         self.super_coin = True
 
-
+# Block class represents the walls and boundaries within the maze
 class Block:
     """Class of block of wall, element of board."""
 
@@ -98,10 +99,10 @@ class Block:
         self.pos_zs = pos_zn + 1
         self.walls = walls
 
-        self.floor_color = data.FLOOR_COLOR     # floor color
-        self.celling_color = data.CELING_COLOR  # celling color
-        self.celing_level = data.CELLING_LEVEL   # height of celling
-        self.floor_level = data.FLOOR_LEVEL     # height of floor
+        self.floor_color = data.FLOOR_COLOR         # floor color
+        self.celling_color = data.CELING_COLOR      # celling color
+        self.celing_level = data.CELLING_LEVEL      # height of celling
+        self.floor_level = data.FLOOR_LEVEL         # height of floor
 
     def __str__(self):
         return "Block with position: " + \
@@ -119,38 +120,26 @@ class Block:
         if axis in "NS":
             pos_z = self.pos_zn if "N" in axis else self.pos_zs
 
-            # Start drawing a polygon
-            gl.glBegin(gl.GL_QUADS)
-            set_color(self.floor_color)
-            # Top Left
+            gl.glBegin(gl.GL_QUADS)                                         # Start drawing a polygon
+            set_color(self.floor_color)                                     # Top Left
             gl.glVertex3f(self.pos_xw,  self.floor_level, pos_z)
-            # Top Right
-            gl.glVertex3f(self.pos_xe, self.floor_level, pos_z)
-
+            gl.glVertex3f(self.pos_xe, self.floor_level, pos_z)             # Top Right
             set_color(self.celling_color)
-            # Bottom Right
-            gl.glVertex3f(self.pos_xe, self.celing_level, pos_z)
-            # Bottom Left
-            gl.glVertex3f(self.pos_xw,  self.celing_level, pos_z)
+            gl.glVertex3f(self.pos_xe, self.celing_level, pos_z)            # Bottom Right
+            gl.glVertex3f(self.pos_xw,  self.celing_level, pos_z)           # Bottom Left
             gl.glEnd()
 
         elif axis in "WE":
 
             pos_x = self.pos_xe if "E" in axis else self.pos_xw
 
-            # Start drawing a polygon
-            gl.glBegin(gl.GL_QUADS)
+            gl.glBegin(gl.GL_QUADS)                                         # Start drawing a polygon
             set_color(self.floor_color)
-            # Top Left
-            gl.glVertex3f(pos_x, self.floor_level, self.pos_zs)
-            # Top Right
-            gl.glVertex3f(pos_x, self.floor_level, self.pos_zn)
-
+            gl.glVertex3f(pos_x, self.floor_level, self.pos_zs)             # Top Left
+            gl.glVertex3f(pos_x, self.floor_level, self.pos_zn)             # Top Right
             set_color(self.celling_color)
-            # Bottom Right
-            gl.glVertex3f(pos_x, self.celing_level, self.pos_zn)
-            # Bottom Left
-            gl.glVertex3f(pos_x, self.celing_level, self.pos_zs)
+            gl.glVertex3f(pos_x, self.celing_level, self.pos_zn)            # Bottom Right
+            gl.glVertex3f(pos_x, self.celing_level, self.pos_zs)            # Bottom Left
             gl.glEnd()
 
     def _draw_celling(self):
@@ -169,9 +158,7 @@ class Block:
     def draw_block(self):
         """ Function draws the block."""
 
-        # draw celling
-        self._draw_celling()
-
+        self._draw_celling()        # draw celling
         # draw back, front, left and right wall
         for wall in "NSWE":
             if wall in self.walls:
@@ -198,15 +185,14 @@ class Board:
         1 - square with walls
         """
 
-        self.maze_len = len(maze)           # len of maze
-        self.maze_row_len = len(maze[0])    # width of maze
+        self.maze_len = len(maze)            # len of maze
+        self.maze_row_len = len(maze[0])     # width of maze
         self.super_coins_no = 5              # number of super-coins
         self.blocks = []                     # blocks in the board
         self.coins = []                      # coins
         self.ghost_nest_position = 11, 14    # position of the ghost nest
 
-        # dict of knots, key=position, value=possible directions of move
-        self.knots = {}
+        self.knots = {}                      # dict of knots, key=position, value=possible directions of move
 
         self.floor_level = data.FLOOR_LEVEL  # height of floor
         self.floor_color = data.FLOOR_COLOR  # floor color
@@ -331,9 +317,7 @@ class Board:
         Function draws all board elements, floor, blocks and coins.
         """
 
-        # draw the board floor
-        self._draw_floor()
-
+        self._draw_floor()        # draw the board floor
         for block in self.blocks:
             block.draw_block()
 

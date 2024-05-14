@@ -58,7 +58,7 @@ class Main:
 
         :param args: integer represented pushed key
         """
-        # działanie klawiszy w osobnej funkcji
+        # operation of keys in a separate function.
 
         if key == 100:
             self.pacman.next_direction = 'W'
@@ -105,7 +105,6 @@ class Main:
                 self.board.super_coins.remove(coin)
                 for one_ghost in self.ghosts:
                     one_ghost.become_eatable()
-                    # TODO what if pacman eat 2 coins in short time!
             else:
                 self.board.coins.remove(coin)
 
@@ -148,7 +147,6 @@ class Main:
 
     def ghost_move(self, ghost):
         """"""
-        # TODO TESTS !!!!!!!!!
         directions = self.board.knots.get(
             (ghost.pos_x, ghost.pos_z)
         )
@@ -159,7 +157,6 @@ class Main:
                 if len(directions) > 1:
                     if ghost.next_direction in directions:
                         ghost.direction = ghost.next_direction
-                        # TODO tę metodę trzeba poprawić
                         ghost.choice_next_direction()
                         ghost.move()
                     elif ghost.direction in directions:
@@ -233,7 +230,7 @@ class Main:
         # counts number of frames
         self.fps()
 
-        #  since this is double buffered,
+        # since this is double buffered,
         # swap the buffers to display what just got drawn.
         glut.glutSwapBuffers()
 
@@ -255,24 +252,14 @@ class Main:
         :param width: window width
         :param height: window height
         """
-        # This Will Clear The Background Color To Black
-        gl.glClearColor(0.0, 0.0, 0.0, 0.0)
+        gl.glClearColor(0.0, 0.0, 0.0, 0.0)        # This Will Clear The Background Color To Black
+        gl.glClearDepth(1.0)                       # Enables Clearing Of The Depth Buffer
+        gl.glDepthFunc(gl.GL_LESS)                 # The Type Of Depth Test To Do
+        gl.glEnable(gl.GL_DEPTH_TEST)              # Enables Depth Testing
+        gl.glShadeModel(gl.GL_SMOOTH)              # Enables Smooth Color Shading
+        gl.glMatrixMode(gl.GL_PROJECTION)          # Reset The Projection Matrix.
+        gl.glLoadIdentity()                        # Calculate The Aspect Ratio Of The Window.
 
-        # Enables Clearing Of The Depth Buffer
-        gl.glClearDepth(1.0)
-
-        # The Type Of Depth Test To Do
-        gl.glDepthFunc(gl.GL_LESS)
-        # Enables Depth Testing
-        gl.glEnable(gl.GL_DEPTH_TEST)
-        # Enables Smooth Color Shading
-        gl.glShadeModel(gl.GL_SMOOTH)
-
-        # Reset The Projection Matrix.
-        gl.glMatrixMode(gl.GL_PROJECTION)
-
-        # Calculate The Aspect Ratio Of The Window.
-        gl.glLoadIdentity()
         glu.gluPerspective(45.0, float(width)/float(height), 0.1, 100.0)
 
         gl.glMatrixMode(gl.GL_MODELVIEW)
@@ -289,8 +276,7 @@ class Main:
         if height == 0:
             height = 1
 
-        # Reset The Current Viewport And Perspective Transformation
-        gl.glViewport(0, 0, width, height)
+        gl.glViewport(0, 0, width, height)        # Reset The Current Viewport And Perspective Transformation
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         glu.gluPerspective(60.0, float(width)/float(height), 0.1, 100.0)
@@ -306,48 +292,27 @@ class Main:
         #  RGBA color
         # Alpha components supported
         # Depth buffer
-        glut.glutInitDisplayMode(
-            glut.GLUT_RGBA | glut.GLUT_DOUBLE | glut.GLUT_DEPTH
-        )
+        glut.glutInitDisplayMode(glut.GLUT_RGBA | glut.GLUT_DOUBLE | glut.GLUT_DEPTH)
 
-        # get a 640 x 480 window
-        glut.glutInitWindowSize(1000, 800)
-
-        # the window starts at the upper left corner of the screen
-        glut.glutInitWindowPosition(0, 0)
-
-        # Asign name of the window
-        glut.glutCreateWindow("PacMan")
-
-        # Register the function called when the keyboard is pressed.
-        glut.glutKeyboardFunc(self.key_pressed)
-
+        glut.glutInitWindowSize(1000, 800)                 # get a 640 x 480 window
+        glut.glutInitWindowPosition(0, 0)                  # the window starts at the upper left corner of the screen
+        glut.glutCreateWindow("PacMan")                    # Asign name of the window
+        glut.glutKeyboardFunc(self.key_pressed)            # Register the function called when the keyboard is pressed.
         glut.glutSpecialFunc(self.key_pressed_special)
-
         glut.glutSpecialUpFunc(self.key_pressed_special_up)
 
-        # Register the drawing function with glut.
-        glut.glutDisplayFunc(self.draw_scene)
+        glut.glutDisplayFunc(self.draw_scene)              # Register the drawing function with glut.
 
         # Uncomment this line to get full screen.
         # glut.glutFullScreen()
 
-        # When we are doing nothing, redraw the scene.
-        glut.glutIdleFunc(self.draw_scene)
-
-        # Register the function called when our window is resized.
-        glut.glutReshapeFunc(self.re_size_gl_scene)
-
-        # Initialize our window.
-        self.init_gl(640, 480)
-
-        # Start Event Processing Engine
-        glut.glutMainLoop()
+        glut.glutIdleFunc(self.draw_scene)                 # When we are doing nothing, redraw the scene.
+        glut.glutReshapeFunc(self.re_size_gl_scene)        # Register the function called when our window is resized.
+        self.init_gl(640, 480)                             # Initialize our window.
+        glut.glutMainLoop()                                # Start Event Processing Engine
 
 
 if __name__ == "__main__":
-
-    # Print message to console, and kick off the main to get it rolling.
-    print("Hit ESC key to quit.")
+    print("Hit ESC key to quit.")    # Print message to console, and kick off the main to get it rolling.
     game = Main(board.maze)
     game.main()
