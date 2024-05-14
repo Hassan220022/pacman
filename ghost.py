@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from random import choice
 from time import time
 

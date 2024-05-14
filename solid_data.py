@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from OpenGL import GL as gl
 
 # Define constant colors using RGB values

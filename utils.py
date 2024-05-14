@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # Importing the time function from the time module to measure execution time
 from time import time
 
