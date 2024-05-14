@@ -48,10 +48,10 @@ class Coin:
     def draw(self):
         """Function to draw the coin in the OpenGL context."""
         set_color(self.coin_color)
-        gl.glPushMatrix()                                       # Push the current matrix stack to save the current transformation state
-        gl.glTranslatef(self.pos_x + 0.5, 0.0, self.pos_z + 0.5)# Translate the coin to its position in the maze
-        glut.glutSolidSphere(self.radius, 10, 10)               # Render the coin as a solid sphere
-        gl.glPopMatrix()                                        # Pop the matrix stack to restore the previous transformation state
+        gl.glPushMatrix()                                           # Push the current matrix stack to save the current transformation state
+        gl.glTranslatef(self.pos_x + 0.5, 0.0, self.pos_z + 0.5)    # Translate the coin to its position in the maze
+        glut.glutSolidSphere(self.radius, 10, 10)                   # Render the coin as a solid sphere
+        gl.glPopMatrix()                                            # Pop the matrix stack to restore the previous transformation state
 
 class SuperCoin(Coin):
     """Class for SuperCoin object, which inherits from Coin."""
